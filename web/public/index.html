@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyLingua: Spanish-English voice translator</title>
+  <meta name="description" content="MyLingua: hold the microphone, speak, and hear a natural Spanish-English translation. Built with Gemini through Firebase AI Logic.">
+  <style>
+    :root { color-scheme: light dark; --fg: #1d1b20; --muted: #5f5b66; --accent: #6650a4; --bg: #fdfbff; }
+    @media (prefers-color-scheme: dark) { :root { --fg: #e6e0e9; --muted: #b9b3c0; --accent: #d0bcff; --bg: #141218; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.55; }
+    main { max-width: 680px; margin: 0 auto; padding: 56px 24px 72px; }
+    h1 { font-size: 2.4rem; margin: 0 0 8px; letter-spacing: -0.02em; }
+    h2 { font-size: 1.2rem; margin: 40px 0 8px; }
+    p, li { color: var(--fg); }
+    .lede { font-size: 1.2rem; color: var(--muted); margin: 0 0 28px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 8px; }
+    a.button { display: inline-block; padding: 12px 20px; border-radius: 999px; text-decoration: none; font-weight: 600; background: var(--accent); color: #fff; }
+    a.button.secondary { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+    a { color: var(--accent); }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+    .note { border-left: 3px solid var(--accent); padding: 4px 14px; color: var(--muted); margin: 16px 0; }
+    footer { margin-top: 56px; font-size: 0.9rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>MyLingua</h1>
+  <p class="lede">Hold the microphone, speak, release. Hear a natural translation between Spanish and English.</p>
+
+  <p>MyLingua is an Android app. It transcribes your speech on the device, translates it with Gemini through Firebase AI Logic, and reads the translation aloud.</p>
+
+  <div class="actions">
+    <a class="button" href="https://github.com/Luminous-Works/MyLingua/releases/download/v1.0.0/MyLingua-v1.0-debug.apk">Download the test APK</a>
+    <a class="button secondary" href="https://github.com/Luminous-Works/MyLingua">Source code (Apache-2.0)</a>
+  </div>
+
+  <h2>Test it</h2>
+  <ol>
+    <li>Install the APK on an Android 7.0 (API 24) or later device. You may need to allow installs from your browser or file manager.</li>
+    <li>Grant microphone access when asked.</li>
+    <li>Hold the microphone and say something in English. Release. The Spanish translation appears and is spoken.</li>
+    <li>Tap <strong>Español</strong>, then hold the microphone and speak Spanish. The English translation appears and is spoken.</li>
+  </ol>
+
+  <p class="note">This is a debug test build. Gemini calls are protected by Firebase App Check, which only accepts registered devices. If the translation fails on your device, open an issue on the <a href="https://github.com/Luminous-Works/MyLingua/issues">GitHub repository</a> with the debug token from Logcat (tag <code>DebugAppCheckProvider</code>) and it will be registered.</p>
+
+  <h2>How it works</h2>
+  <ul>
+    <li><strong>Listen:</strong> Android SpeechRecognizer, with live partial results.</li>
+    <li><strong>Translate:</strong> Gemini (<code>gemini-2.5-flash</code>) through Firebase AI Logic, with an interpreter system instruction for natural, grammatical output.</li>
+    <li><strong>Speak:</strong> Android TextToSpeech, using the best voice for the target language.</li>
+  </ul>
+
+  <h2>License</h2>
+  <p>Apache License 2.0. See <a href="https://github.com/Luminous-Works/MyLingua/blob/main/LICENSE">LICENSE</a>.</p>
+
+  <footer>MyLingua for the #BuildHybridAI Hackathon.</footer>
+</main>
+</body>
+</html>

@@ -51,6 +51,7 @@ with the project's debug token before Gemini calls will succeed. The author will
 request; include your device's debug token from Logcat (tag `DebugAppCheckProvider`).
 
 ## Links
-- Repository: (add GitHub URL)
-- Test build (APK): (add release URL)
+- Repository (Apache-2.0): https://github.com/Luminous-Works/MyLingua
+- Test build (APK, v1.0.0): https://github.com/Luminous-Works/MyLingua/releases/tag/v1.0.0
+- Hosted project page and direct APK download: https://mylingua.tyrone-luminousworksllc.workers.dev/
 - Demo video: (add YouTube URL, under 3 minutes, English)
