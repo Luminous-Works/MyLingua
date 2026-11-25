@@ -1,0 +1,25 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+.kotlin/
+
+# Firebase project config. Holds the project's API key and identifiers.
+# Never commit it. Each builder downloads their own from the Firebase console.
+app/google-services.json
+
+# Signing material
+*.jks
+*.keystore
+keystore.properties
