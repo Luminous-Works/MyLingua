@@ -45,7 +45,7 @@ The system instruction is:
 | On-device model status on that phone | `UNAVAILABLE` (no AICore package found on the phone) |
 | **On-device inference with Gemini Nano** | **Not tested on any device**, including Spanish output quality |
 | On-device model download | Not tested |
-| Release build | Not tested |
+| Release 1.1.0, fresh install on the same phone: cloud translation with reCAPTCHA App Check, no debug token | Works |
 
 Firebase's on-device SDK is experimental. Check its current documentation for supported devices
 and languages.
@@ -56,7 +56,18 @@ and languages.
 - **Tap** the microphone for hands-free listening. Tap again to finish.
 - Tap **English** or **Español** to choose the language you speak. The other one is the output.
 - Allow microphone access when asked.
+- Tap the **gear** to choose a theme: Night Ocean, Caribbean Sand, Sunny Day or Overcast.
 - The cloud path needs an internet connection. Offline use has not been tested.
+
+## Download
+
+[Latest test build](https://github.com/Luminous-Works/MyLingua/releases/latest) (Android 8.0 or later).
+
+## What's next
+
+Adding Haitian Creole, to connect English, Spanish and Kreyòl speakers across Jamaica, Cuba and
+Haiti, which share a long history. Also: testing Gemini Nano on supported hardware, and Play
+Integrity for a Play Store release.
 
 ## Build and run
 
@@ -73,7 +84,7 @@ and a Firebase project.
    rejected. Keep the token private.
 
 Release builds use the reCAPTCHA App Check provider and need `recaptcha.siteKey` in
-`local.properties`. That path has not been tested.
+`local.properties`. Tested on one phone (see Test status). Signing uses a git-ignored `keystore.properties`.
 
 ## Repository note
 
