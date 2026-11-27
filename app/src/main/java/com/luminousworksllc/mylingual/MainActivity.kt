@@ -92,6 +92,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel
+import com.google.firebase.ai.InferenceMode
+import com.google.firebase.ai.InferenceSource
+import com.google.firebase.ai.OnDeviceConfig
+import com.google.firebase.ai.OnDeviceModelOption
+import com.google.firebase.ai.OnDeviceModelStatus
+import com.google.firebase.ai.type.PublicPreviewAPI
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.RequestOptions
@@ -185,6 +191,8 @@ data class MiLinguaUiState(
     val phase: AppPhase = AppPhase.Idle,
     val transcriptText: String = "",
     val translationText: String = "",
+    /** Which model answered the last translation; blank until one succeeds. */
+    val answeredBy: String = "",
     val errorMessage: String? = null,
     val isHandsFree: Boolean = false
 )
@@ -193,6 +201,7 @@ data class MiLinguaUiState(
 // 4. VIEWMODEL (MiLinguaViewModel)
 // ============================================================================
 
+@OptIn(PublicPreviewAPI::class)
 class MiLinguaViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(MiLinguaUiState())
@@ -219,11 +228,41 @@ class MiLinguaViewModel(application: Application) : AndroidViewModel(application
             requestOptions = RequestOptions(timeoutInMillis = 20_000L),
             systemInstruction = content {
                 text(SYSTEM_INSTRUCTION)
-            }
+            },
+            // Hybrid inference: use Gemini Nano on the phone when AICore can run it,
+            // otherwise the cloud model above. PREVIEW selects the Gemini Nano 4 category.
+            onDeviceConfig = OnDeviceConfig(
+                mode = InferenceMode.PREFER_ON_DEVICE,
+                temperature = 0.2f,
+                modelOption = OnDeviceModelOption.PREVIEW
+            )
         )
     }
 
+    /**
+     * The SDK never downloads the on-device model as part of a request, so ask for it at
+     * startup. On phones without support this only logs the status; translation then
+     * uses the cloud.
+     */
+    private fun prepareOnDeviceModel() {
+        viewModelScope.launch {
+            try {
+                val onDevice = generativeModel.onDeviceExtension ?: return@launch
+                val status = onDevice.checkStatus()
+                Log.i(TAG, "On-device model status: $status")
+                if (status == OnDeviceModelStatus.DOWNLOADABLE) {
+                    onDevice.download().collect { Log.i(TAG, "On-device model download: $it") }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "On-device model unavailable: ${e.message}", e)
+            }
+        }
+    }
+
     init {
+        prepareOnDeviceModel()
         textToSpeech = TextToSpeech(application.applicationContext) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 isTtsReady = true
@@ -339,6 +378,7 @@ class MiLinguaViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             val prompt = "Source language: ${direction.sourceLanguage}. Target language: ${direction.targetLanguage}.\n\n$spokenText"
             var translatedText: String? = null
+            var answeredBy = ""
 
             // Firebase AI Logic is the only route to the model, so its own error is what
             // reaches the screen. Retries cover transient socket/network errors.
@@ -349,6 +389,12 @@ class MiLinguaViewModel(application: Application) : AndroidViewModel(application
                     attempts++
                     val response = generativeModel.generateContent(prompt)
                     translatedText = response.text?.trim()
+                    answeredBy = if (response.inferenceSource == InferenceSource.ON_DEVICE) {
+                        "ON-DEVICE · GEMINI NANO"
+                    } else {
+                        "CLOUD · GEMINI"
+                    }
+                    Log.i(TAG, "Translation answered: $answeredBy")
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
@@ -371,7 +417,8 @@ class MiLinguaViewModel(application: Application) : AndroidViewModel(application
             _uiState.update {
                 it.copy(
                     phase = AppPhase.Speaking,
-                    translationText = translatedText
+                    translationText = translatedText,
+                    answeredBy = answeredBy
                 )
             }
 
@@ -847,6 +894,14 @@ private fun TranscriptAndTranslationCards(
                             fontSize = 24.sp,
                             lineHeight = 32.sp
                         )
+                        if (state.phase != AppPhase.Translating && state.answeredBy.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                text = state.answeredBy,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = CaribbeanPalette.JuicyGold
+                            )
+                        }
                     }
                 }
             }

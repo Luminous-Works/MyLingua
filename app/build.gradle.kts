@@ -31,7 +31,7 @@ android {
 
     defaultConfig {
         applicationId = "com.luminousworksllc.mylingual"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -77,6 +77,8 @@ dependencies {
 
     // Gemini via Firebase AI Logic
     implementation("com.google.firebase:firebase-ai")
+    // Hybrid (on-device Gemini Nano) support. Experimental, and not yet in the Firebase BoM.
+    implementation("com.google.firebase:firebase-ai-ondevice:16.0.0-beta08")
 
     // App Check. Release builds attest with reCAPTCHA Enterprise (src/release).
     // The debug provider is debug-only (src/debug), so it never ships in a release APK.
