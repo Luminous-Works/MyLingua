@@ -65,6 +65,6 @@ one phone. An internet connection is required for cloud translation.
 
 ## Links
 - Repository (Apache-2.0): https://github.com/Luminous-Works/MyLingua
-- Test build: https://github.com/Luminous-Works/MyLingua/releases/tag/v1.1.0
+- Test build: https://github.com/Luminous-Works/MyLingua/releases/tag/v1.2.0
 - Hosted project page: TODO. Update it before listing it.
 - Demo video: TODO (public YouTube, 3 minutes or less, English)
