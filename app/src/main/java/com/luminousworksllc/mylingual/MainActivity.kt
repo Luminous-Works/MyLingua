@@ -20,6 +20,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.SideEffect
+import androidx.core.view.WindowCompat
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -44,6 +46,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -116,16 +119,6 @@ import java.util.UUID
 // 1. CARIBBEAN AQUATIC COLOR PALETTE
 // ============================================================================
 
-object CaribbeanPalette {
-    val NightOcean = Color(0xFF050810)      // Dark Caribbean night ocean canvas
-    val JuicyAqua = Color(0xFF00CEC9)       // Turquoise Caribbean ocean aqua
-    val DeepLagoon = Color(0xFF0AB3A8)      // Deep lagoon cyan/teal
-    val JuicyGold = Color(0xFFD4A843)       // Metallic Caribbean gold
-    val DriftwoodWhite = Color(0xFFF8EDD0)  // Warm coastal driftwood off-white
-    val LuminousGreen = Color(0xFF2ECC71)   // Active status green
-    val DeepSpaceCard = Color(0xFF0D1322)   // Glassmorphic translucent card fill
-    val CoralRed = Color(0xFFC0392B)        // Alert/Error red
-}
 
 // ============================================================================
 // 2. MAIN ACTIVITY
@@ -135,7 +128,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        CaribbeanPalette.load(this)
         setContent {
+            val dark = CaribbeanPalette.current.isDark
+            SideEffect {
+                WindowCompat.getInsetsController(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = !dark
+                    isAppearanceLightNavigationBars = !dark
+                }
+            }
             MiLinguaTheme {
                 MiLinguaScreen()
             }
@@ -155,8 +156,8 @@ fun MiLinguaTheme(content: @Composable () -> Unit) {
             onSecondary = CaribbeanPalette.NightOcean,
             onBackground = CaribbeanPalette.DriftwoodWhite,
             onSurface = CaribbeanPalette.DriftwoodWhite,
-            surfaceVariant = Color(0xFF141C30),
-            onSurfaceVariant = Color(0xFFB0C4DE)
+            surfaceVariant = CaribbeanPalette.DeepSpaceCard,
+            onSurfaceVariant = CaribbeanPalette.DriftwoodWhite.copy(alpha = 0.8f)
         ),
         content = content
     )
@@ -585,7 +586,7 @@ fun MiLinguaContent(
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         CaribbeanPalette.NightOcean,
-                        Color(0xFF081224),
+                        CaribbeanPalette.current.backgroundMid,
                         CaribbeanPalette.NightOcean
                     )
                 )
@@ -599,7 +600,10 @@ fun MiLinguaContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header Bar
-            AppHeaderBar()
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Box(modifier = Modifier.align(Alignment.TopCenter)) { AppHeaderBar() }
+                ThemeMenuButton(modifier = Modifier.align(Alignment.TopEnd).offset(x = 16.dp, y = (-8).dp))
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -869,7 +873,7 @@ private fun TranscriptAndTranslationCards(
             ) {
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF092032).copy(alpha = 0.85f)
+                        containerColor = CaribbeanPalette.current.translationCard.copy(alpha = 0.85f)
                     ),
                     border = BorderStroke(1.5.dp, CaribbeanPalette.JuicyAqua.copy(alpha = 0.6f)),
                     shape = RoundedCornerShape(24.dp),
@@ -982,17 +986,17 @@ private fun AquaticShimmeringMicSection(
                                 )
                                 isTranslating -> listOf(
                                     CaribbeanPalette.JuicyGold,
-                                    Color(0xFF8A6020),
+                                    CaribbeanPalette.current.orbTranslating,
                                     CaribbeanPalette.NightOcean
                                 )
                                 isSpeaking -> listOf(
                                     CaribbeanPalette.LuminousGreen,
-                                    Color(0xFF0C6632),
+                                    CaribbeanPalette.current.orbSpeaking,
                                     CaribbeanPalette.NightOcean
                                 )
                                 else -> listOf(
                                     CaribbeanPalette.DeepLagoon,
-                                    Color(0xFF082234),
+                                    CaribbeanPalette.current.orbIdle,
                                     CaribbeanPalette.NightOcean
                                 )
                             }
@@ -1001,7 +1005,7 @@ private fun AquaticShimmeringMicSection(
                 contentAlignment = Alignment.Center
             ) {
                 MicrophoneIconGlyph(
-                    tint = if (isListening || isTranslating || isSpeaking) CaribbeanPalette.NightOcean else CaribbeanPalette.DriftwoodWhite,
+                    tint = if (isListening || isTranslating || isSpeaking) CaribbeanPalette.NightOcean else CaribbeanPalette.current.micIdleIcon,
                     modifier = Modifier.size(46.dp)
                 )
             }
