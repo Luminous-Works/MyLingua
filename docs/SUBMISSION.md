@@ -1,58 +1,70 @@
 # Devpost submission text: MiLingua
 
-Draft. Edit before pasting. Every claim here is backed by code in this repository.
+Paste into Devpost. Fill in the items marked TODO first.
 
 ## Platform
 Android (Kotlin, Jetpack Compose).
 
-## Project description
-MiLingua is a hands-free Spanish-English voice translator. Hold the microphone, speak, and
-release. The app transcribes your speech on the device, translates it with Gemini, and reads
-the natural translation aloud. The screen has one job: the words you said, and what they mean
-in the other language.
+## Inspiration
+Most translation apps are built around typing, menus and reading. In a real conversation you want
+to speak and hear the answer.
 
-## How Firebase AI Logic is used
-- The app calls Gemini (`gemini-1.5-flash`) through **Firebase AI Logic** with
-  `Firebase.ai(backend = GenerativeBackend.googleAI())` and `generativeModel(...)`
-  (`app/src/main/java/com/luminousworksllc/mylingual/MainActivity.kt`).
-- A fixed **system instruction** turns the model into an interpreter, not a word-for-word
-  translator: grammatically flawless, natural, and culturally appropriate, returning only the
-  translated text.
-- Each request carries the direction the user chose, so the model never has to guess the language.
-- **Firebase App Check** is installed in the Application class before the first AI call
-  (`MyLinguaApp.kt`), so requests come only from registered app installs.
+## What it does
+- One screen for English and Spanish, in either direction.
+- Hold the microphone to speak and release to translate, or tap for hands-free listening.
+- Shows a live partial transcript, then the translation, and reads it aloud.
+- Shows whether the phone or the cloud answered.
+- A Caribbean-inspired design with a water-ripple animation that responds to your voice.
 
-## Features
-- One screen with a Caribbean aquatic design system (JUICY Aqua, Deep Lagoon, JUICY Gold, Driftwood White, Night Ocean).
-- Press and hold to speak, release to translate. Quick tap for hands-free listening.
-- Real-time shimmering water ripple animation responding to voice volume.
-- Live partial transcript while you speak.
-- Language switch between English and Español, locked while a translation is in progress.
-- Automatic spoken playback, with a voice chosen for the target language and country.
-- Clear permission handling: request, retry, and a direct route to system settings if access
-  was blocked.
+## How we used Firebase AI Logic
+- **Hybrid inference:** `Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(...)`
+  with `OnDeviceConfig(mode = InferenceMode.PREFER_ON_DEVICE, modelOption = OnDeviceModelOption.PREVIEW)`,
+  the on-device category used for Gemini Nano 4. The app prefers the phone's model and otherwise
+  uses `gemini-3.5-flash-lite` in the cloud. Code: `MainActivity.kt`.
+- **Interpreter system instruction:** asks for natural, culturally appropriate output with no commentary.
+- **App Check:** installed in the `Application` class before the first AI call. Debug builds use the
+  debug provider.
+
+**Test status:** our test phone (DOOGEE Note 58) reports the on-device model as unavailable, so its
+translations are answered by the cloud. The on-device path is integrated and builds, but we have
+not run Gemini Nano on a supported device.
 
 ## Value proposition
-Most translation apps ask you to type, tap through menus, and read a result. MiLingua is built
-for a conversation: speak, and hear the translation without looking at the screen. Using Gemini
-through Firebase AI Logic means the translation reads like a person wrote it, not like a dictionary
-lookup, and the speech recognition and voice output run on the device.
+A focused interpreter for face-to-face English-Spanish conversation: speak, then hear the
+translation. The hybrid setup is designed to use the phone's own model where one is available and
+use the cloud on phones without it.
 
-## Testing instructions for judges
-1. Install the test build (APK link below) on an Android 7.0+ device.
-2. Grant the microphone permission when prompted.
-3. Hold the microphone button and say, in English, "Where is the nearest train station?"
-   Release. The Spanish translation appears and is read aloud.
-4. Tap **Español** to switch to Spanish input. Hold the microphone and say a Spanish sentence.
-   The English translation appears and is read aloud.
-5. Tap the microphone once to try hands-free listening. Tap again to finish.
+## Challenges
+- A fallback path in the code hid the real error behind a 404 from a retired model. Removing that
+  path showed the cause: an unregistered App Check debug token.
+- A cloud model reported high demand, so we moved to Flash-Lite and added a 20-second timeout per try.
+- Firebase's on-device library required Kotlin 2.4 and Android 8.0 or later.
 
-**App Check note:** the test build uses App Check's debug provider. Your device must be registered
-with the project's debug token before Gemini calls will succeed. The author will register it on
-request; include your device's debug token from Logcat (tag `DebugAppCheckProvider`).
+## What's next
+Testing Gemini Nano on supported hardware, Play Integrity for release, and a design refresh.
+
+## What we built during the submission period
+TODO (author): confirm whether any code existed before Nov 11, 2026. The repository's first commit
+is dated Nov 25, 2026. If everything was built after Nov 11, say: "The whole app was built during
+the submission period: voice capture, translation through Firebase AI Logic, spoken output, App
+Check, hybrid on-device/cloud inference and the interface."
+
+AI coding assistants used: Gemini and Claude Code. TODO (author): add any others, and disclose any
+pre-existing code.
+
+## Testing instructions
+1. Install the test build on an Android 8.0 or later phone.
+2. Allow microphone access.
+3. Hold the microphone, say "Where is the nearest train station?" and release. The Spanish
+   translation appears and is read aloud.
+4. Tap **Español**, then say a Spanish sentence to hear it in English.
+
+TODO (author): App Check access. The debug build needs a registered debug token. Give judges a
+working way in, in Devpost's **private** testing instructions only. Never put a token in this
+repository or on the public project page.
 
 ## Links
 - Repository (Apache-2.0): https://github.com/Luminous-Works/MyLingua
-- Test build (APK, v1.0.0): https://github.com/Luminous-Works/MyLingua/releases/tag/v1.0.0
-- Hosted project page and direct APK download: https://mylingua.tyrone-luminousworksllc.workers.dev/
-- Demo video: (add YouTube URL, under 3 minutes, English)
+- Test build: TODO. Publish a new one. The v1.0.0 release predates these fixes.
+- Hosted project page: TODO. Update it before listing it.
+- Demo video: TODO (public YouTube, 3 minutes or less, English)
