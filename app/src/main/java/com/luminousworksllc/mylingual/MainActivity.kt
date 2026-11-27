@@ -887,7 +887,7 @@ private fun TranscriptAndTranslationCards(
                         }
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
-                            text = if (state.phase == AppPhase.Translating) "Translating..." else state.translationText,
+                            text = if (state.phase == AppPhase.Translating) "Translating with Gemini..." else state.translationText,
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                             color = CaribbeanPalette.JuicyAqua,
@@ -1055,7 +1055,7 @@ private fun StatusBadgeIndicator(phase: AppPhase, isHandsFree: Boolean) {
     val statusText = when (phase) {
         AppPhase.Idle -> "TAP OR HOLD TO SPEAK"
         is AppPhase.Listening -> if (isHandsFree) "LISTENING... TAP TO FINISH" else "LISTENING... RELEASE TO TRANSLATE"
-        AppPhase.Translating -> "TRANSLATING..."
+        AppPhase.Translating -> "TRANSLATING WITH GEMINI..."
         AppPhase.Speaking -> "SPEAKING TRANSLATION..."
     }
 
@@ -1084,6 +1084,8 @@ private fun StatusBadgeIndicator(phase: AppPhase, isHandsFree: Boolean) {
             Spacer(modifier = Modifier.widthIn(8.dp))
             Text(
                 text = statusText,
+                // A little spare width so the last letters are not clipped.
+                modifier = Modifier.padding(end = 4.dp),
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.2.sp,
