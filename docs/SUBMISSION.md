@@ -1,4 +1,4 @@
-# Devpost submission text: MyLingua
+# Devpost submission text: MiLingua
 
 Draft. Edit before pasting. Every claim here is backed by code in this repository.
 
@@ -6,15 +6,15 @@ Draft. Edit before pasting. Every claim here is backed by code in this repositor
 Android (Kotlin, Jetpack Compose).
 
 ## Project description
-MyLingua is a hands-free Spanish-English voice translator. Hold the microphone, speak, and
+MiLingua is a hands-free Spanish-English voice translator. Hold the microphone, speak, and
 release. The app transcribes your speech on the device, translates it with Gemini, and reads
 the natural translation aloud. The screen has one job: the words you said, and what they mean
 in the other language.
 
 ## How Firebase AI Logic is used
-- The app calls Gemini (`gemini-2.5-flash`) through **Firebase AI Logic** with
+- The app calls Gemini (`gemini-1.5-flash`) through **Firebase AI Logic** with
   `Firebase.ai(backend = GenerativeBackend.googleAI())` and `generativeModel(...)`
-  (`app/src/main/java/com/luminousworksllc/mylingual/data/GeminiTranslator.kt`).
+  (`app/src/main/java/com/luminousworksllc/mylingual/MainActivity.kt`).
 - A fixed **system instruction** turns the model into an interpreter, not a word-for-word
   translator: grammatically flawless, natural, and culturally appropriate, returning only the
   translated text.
@@ -23,16 +23,17 @@ in the other language.
   (`MyLinguaApp.kt`), so requests come only from registered app installs.
 
 ## Features
-- One screen. Press and hold to speak, release to translate. Quick tap for hands-free listening.
+- One screen with a Caribbean aquatic design system (JUICY Aqua, Deep Lagoon, JUICY Gold, Driftwood White, Night Ocean).
+- Press and hold to speak, release to translate. Quick tap for hands-free listening.
+- Real-time shimmering water ripple animation responding to voice volume.
 - Live partial transcript while you speak.
-- Microphone-driven ripple animation that brightens with your voice.
 - Language switch between English and Español, locked while a translation is in progress.
 - Automatic spoken playback, with a voice chosen for the target language and country.
 - Clear permission handling: request, retry, and a direct route to system settings if access
   was blocked.
 
 ## Value proposition
-Most translation apps ask you to type, tap through menus, and read a result. MyLingua is built
+Most translation apps ask you to type, tap through menus, and read a result. MiLingua is built
 for a conversation: speak, and hear the translation without looking at the screen. Using Gemini
 through Firebase AI Logic means the translation reads like a person wrote it, not like a dictionary
 lookup, and the speech recognition and voice output run on the device.

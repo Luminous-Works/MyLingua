@@ -1,7 +1,7 @@
-# MyLingua
+# MiLingua
 
 A distraction-free, real-time Spanish-English voice translator for Android.
-Hold the microphone, speak, release. MyLingua transcribes you on-device, translates
+Hold the microphone, speak, release. MiLingua transcribes you on-device, translates
 with Gemini through Firebase AI Logic, and speaks the natural translation aloud.
 
 Built for the #BuildHybridAI Hackathon. Licensed under the [Apache License 2.0](LICENSE).
@@ -11,14 +11,14 @@ Built for the #BuildHybridAI Hackathon. Licensed under the [Apache License 2.0](
 | Step | Component | Where |
 |---|---|---|
 | 1. Listen | Android `SpeechRecognizer` (on-device, streams partial results) | `speech/SpeechTranscriber.kt` |
-| 2. Translate | Gemini `gemini-2.5-flash` via Firebase AI Logic, with an interpreter system instruction | `data/GeminiTranslator.kt` |
+| 2. Translate | Gemini `gemini-1.5-flash` via Firebase AI Logic, with an interpreter system instruction | `data/GeminiTranslator.kt` |
 | 3. Speak | Android `TextToSpeech`, voice chosen by country match, then quality | `speech/VoiceSpeaker.kt` |
 | State | Sealed `Phase`: Idle, Listening, Translating, Speaking | `ui/translate/TranslateViewModel.kt` |
 | Security | Firebase App Check, installed before the first AI call | `MyLinguaApp.kt` |
 
 The system instruction sent to Gemini is:
 
-> You are MyLingua, a highly skilled interpreter. Translate the following input between
+> You are MiLingua, a highly skilled interpreter. Translate the input between
 > English and Spanish. Ensure the output is grammatically flawless, natural-sounding, and
 > culturally appropriate. Only return the translated text itself, with no extra commentary.
 
@@ -45,27 +45,16 @@ Android 7.0 (API 24) or later, and a Firebase project.
    Without this, Gemini calls are rejected.
 6. Open the project in Android Studio and run the `app` configuration.
 
-### Notes for testers
-
-- App Check uses the **debug provider**. A device can call Gemini only if its debug token is
-  registered in the Firebase project above. If you are testing from a build the author made,
-  ask the author to register your device's debug token.
-- Speech recognition and text-to-speech use the device's engines. For best results, install a
-  Spanish offline speech pack in Google's speech settings. Without one, speech recognition may
-  need a network connection.
-
 ## Repository layout
 
 ```
 app/src/main/java/com/luminousworksllc/mylingual/
-  MainActivity.kt              single Activity, hosts the Compose screen
+  MainActivity.kt              single Activity, hosts the Compose screen & MiLinguaViewModel
   MyLinguaApp.kt               Application: App Check setup
   model/Language.kt            English and Spanish, with speech tags and TTS locales
   data/GeminiTranslator.kt     Firebase AI Logic call and system instruction
   speech/SpeechTranscriber.kt  SpeechRecognizer wrapper
   speech/VoiceSpeaker.kt       TextToSpeech wrapper
-  ui/translate/                state, ViewModel, and Compose screen
-  ui/theme/                    Material 3 theme
 ```
 
 ## Status
