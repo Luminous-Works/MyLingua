@@ -94,6 +94,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
+import com.google.firebase.ai.type.RequestOptions
 import com.google.firebase.ai.type.content
 import com.google.firebase.ai.type.generationConfig
 import kotlinx.coroutines.CancellationException
@@ -208,10 +209,14 @@ class MiLinguaViewModel(application: Application) : AndroidViewModel(application
     // Initialize Gemini model via Firebase AI Logic SDK
     private val generativeModel: GenerativeModel by lazy {
         Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
-            modelName = "gemini-3.8-flash",
+            // Flash-Lite: the low-latency tier. gemini-3.8-flash answered "experiencing high
+            // demand" in live testing on 2026-11-27.
+            modelName = "gemini-3.5-flash-lite",
             generationConfig = generationConfig {
                 temperature = 0.2f
             },
+            // The SDK default is 180 s per attempt, too long for a live conversation.
+            requestOptions = RequestOptions(timeoutInMillis = 20_000L),
             systemInstruction = content {
                 text(SYSTEM_INSTRUCTION)
             }
