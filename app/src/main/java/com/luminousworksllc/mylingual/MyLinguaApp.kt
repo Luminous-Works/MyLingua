@@ -1,8 +1,6 @@
 package com.luminousworksllc.mylingual
 
 import android.app.Application
-import com.google.firebase.appcheck.FirebaseAppCheck
-import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 
 /**
  * Application entry point.
@@ -12,18 +10,15 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
  * call, so it is set up here rather than in an Activity (an Activity can be recreated
  * on rotation and other lifecycle events, but the Application runs exactly once).
  *
- * DEBUG PROVIDER ONLY. The debug provider is for development. On first run, Logcat prints
- * a debug secret ("Enter this debug secret into the allow list..."). Register it in
- * Firebase console > App Check > Apps > your app > Manage debug tokens.
- *
- * Before a Play Store release, switch to PlayIntegrityAppCheckProviderFactory (add the
- * com.google.firebase:firebase-appcheck-playintegrity dependency). Otherwise builds
- * installed from Play will be rejected by App Check.
+ * The provider depends on the build type. See [installAppCheck]:
+ *  - debug   (src/debug):   DebugAppCheckProviderFactory. Register the device's debug token
+ *                           in Firebase console > App Check > Apps > Manage debug tokens.
+ *  - release (src/release): reCAPTCHA Enterprise, so an installed APK passes App Check on any
+ *                           phone. The site key comes from local.properties and is never committed.
  */
 class MyLinguaApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        FirebaseAppCheck.getInstance()
-            .installAppCheckProviderFactory(DebugAppCheckProviderFactory.getInstance())
+        installAppCheck()
     }
 }
