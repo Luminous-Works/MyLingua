@@ -44,13 +44,11 @@ use the cloud on phones without it.
 Testing Gemini Nano on supported hardware, Play Integrity for release, and a design refresh.
 
 ## What we built during the submission period
-TODO (author): confirm whether any code existed before Nov 11, 2026. The repository's first commit
-is dated Nov 25, 2026. If everything was built after Nov 11, say: "The whole app was built during
-the submission period: voice capture, translation through Firebase AI Logic, spoken output, App
-Check, hybrid on-device/cloud inference and the interface."
+The whole app was built during the submission period; work started on Nov 25, 2026, with no earlier
+version. That covers voice capture, translation through Firebase AI Logic, spoken output, App Check,
+hybrid on-device/cloud inference and the interface.
 
-AI coding assistants used: Gemini and Claude Code. TODO (author): add any others, and disclose any
-pre-existing code.
+AI coding assistants used: Gemini and Claude Code.
 
 ## Testing instructions
 1. Install the test build on an Android 8.0 or later phone.
