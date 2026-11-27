@@ -21,6 +21,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -521,7 +523,11 @@ class MiLinguaViewModel(application: Application) : AndroidViewModel(application
         private const val SYSTEM_INSTRUCTION =
             "You are MiLingua, a highly skilled interpreter. Translate the input between " +
                 "English and Spanish. Ensure the output is grammatically flawless, " +
-                "natural-sounding, and culturally appropriate. Only return the translated text itself."
+                "natural-sounding, and culturally appropriate. Only return the translated text " +
+                "itself, with no extra commentary. Always answer in the stated target language. " +
+                // The screen labels the result with the target language, so it must match.
+                "If the input is already in the target language, return it in that language " +
+                "with corrected punctuation instead of translating it."
     }
 }
 
@@ -784,6 +790,11 @@ private fun TranscriptAndTranslationCards(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    // The area is short, so follow the content as it grows; otherwise a long translation
+    // and its source label end up below the fold. Manual scrolling still works.
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.maxValue }.collect { scrollState.animateScrollTo(it) }
+    }
     val isListening = state.phase is AppPhase.Listening
     val currentSpoken = (state.phase as? AppPhase.Listening)?.partialTranscript
         ?: state.transcriptText
@@ -942,7 +953,7 @@ private fun AquaticShimmeringMicSection(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.size(210.dp)
+        modifier = Modifier.size(170.dp)
     ) {
         // Concentric Shimmering Water Ripple Waves
         ShimmeringWaterRipplesCanvas(
